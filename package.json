@@ -1,0 +1,73 @@
+{
+  "name": "yourname_3_a01",
+  "version": "1.0.0",
+  "description": "Updating the exercise Sep 6, 2024",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js/hana": "^1",
+    "@sap-cloud-sdk/http-client": "^3.20.0",
+    "@sap-cloud-sdk/util": "^3.20.0",
+    "@sap/cds": "^8",
+    "@sap/low-code-event-handler": "^1.2.4",
+    "@sap/mdk-tools": "^1.3.1",
+    "@sap/xsenv": ">=3.3.2 <3.3.3",
+    "@sap/xssec": "^4.2.4",
+    "express": "^4",
+    "hdb": "^0.19.9",
+    "passport": "^0.7.0"
+  },
+  "devDependencies": {
+    "@cap-js/cds-types": "^0.6",
+    "@cap-js/sqlite": "^1",
+    "@sap/dev-cap-tools": "^1.31.0",
+    "@sap/ux-specification": "^1.120.18"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "start-local": "npm run generate-entry-point && npm run cds-watch",
+    "generate-entry-point": "dev-cap-tools gen-entrypoint",
+    "cds-watch": "cds watch --open",
+    "watch-yourname_3_a01.mymessages": "cds watch --open yourname_3_a01.mymessages/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-yourname_3_a01.productsfaqapp": "cds watch --open yourname_3_a01.productsfaqapp/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
+  "cds": {
+    "requires": {
+      "[production]": {
+        "db": "hana",
+        "auth": "xsuaa"
+      },
+      "app-service": {
+        "impl": "@sap/low-code-event-handler"
+      },
+      "auth": {
+        "[development]": {
+          "kind": "dummy"
+        },
+        "[production]": {
+          "kind": "xsuaa"
+        }
+      },
+      "S4HCP_ServiceOrder_Odata": {
+        "kind": "odata-v2",
+        "csrf": true,
+        "csrfInBatch": true,
+        "model": "srv/external/S4HCP_ServiceOrder_Odata",
+        "[production]": {
+          "credentials": {
+            "destination": "S4HCP-ServiceOrder-Odata"
+          }
+        }
+      }
+    },
+    "features": {
+      "fetch_csrf": true
+    }
+  },
+  "lcap": true,
+  "sapux": [
+    "app/yourname_3_a01.mymessages",
+    "app/yourname_3_a01.productsfaqapp"
+  ]
+}

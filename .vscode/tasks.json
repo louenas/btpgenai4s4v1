@@ -1,0 +1,85 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dpt.ptdeploy",
+      "label": "Deploy yourname_3_a01",
+      "taskType": "Deploy"
+    },
+    {
+      "type": "dpt.ptdeploy",
+      "label": "Enable Discovery and Deploy yourname_3_a01",
+      "taskType": "Deploy",
+      "enableDiscovery": "true"
+    },
+    {
+      "label": "DeployToHANADB:.env1",
+      "type": "shell",
+      "command": "eval $(cat ${workspaceFolder}/env/.env1) cds deploy --to hana --auto-undeploy",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "PreLaunchTask for Run yourname_3_a01",
+      "type": "process",
+      "command": "npx",
+      "args": [
+        "dev-cap-tools",
+        "gen-entrypoint"
+      ],
+      "dependsOn": [
+        "BuildMDK",
+        "DeployToHANADB:.env1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "npm-install",
+      "type": "process",
+      "command": "npm",
+      "args": [
+        "install"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/"
+      }
+    },
+    {
+      "label": "BuildMDK",
+      "type": "process",
+      "command": "npx",
+      "args": [
+        "mdk",
+        "build",
+        "--target",
+        "module",
+        "--ui5",
+        "--recursive"
+      ],
+      "dependsOn": [
+        "npm-install"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/"
+      }
+    },
+    {
+      "label": "dev-project",
+      "type": "process",
+      "command": "npx",
+      "args": [
+        "dev-cap-tools",
+        "gen-entrypoint"
+      ],
+      "dependsOn": [
+        "BuildMDK"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/"
+      }
+    }
+  ]
+}
