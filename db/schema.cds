@@ -7,19 +7,19 @@ using { cuid } from '@sap/cds/common';
 entity CustomerMessage : cuid
 {
     customerMessageID : Integer @mandatory;
-    titleEnglish : String(100);
-    customerName : String(100);
+    titleEnglish : String(40);
+    customerName : String(40);
     productName : String(100);
     summaryEnglish : String(1000);
     messageCategory : String(100);
     messageUrgency : String(100);
     messageSentiment : String(100);
-    titleCustomerLanguage : String(100);
-    customerId : String(100);
-    productId : String(100);
+    titleCustomerLanguage : String(40);
+    customerId : String(36);
+    productId : String(36);
     summaryCustomerLanguage : String(1000);
-    originatingCountry : String(100);
-    sourceLanguage : String(100);
+    originatingCountry : String(25);
+    sourceLanguage : String(25);
     fullMessageCustomerLanguage : String(5000);
     fullMessageEnglish : String(5000);
     suggestedResponseEnglish : String(5000);

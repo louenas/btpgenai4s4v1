@@ -28,7 +28,7 @@
                     return Controller.extend("PreviewController", {
                         onInit: function () {
 
-                            const data = {"Services":[{"ServiceName":"yourname_3_a01Srv","DetailsURL":"./service/yourname_3_a01/","Metadata":"./service/yourname_3_a01/$metadata","Entities":[{"Name":"CustomerMessage","URL":"./service/yourname_3_a01/CustomerMessage","FioriURL":"$fiori-preview/yourname_3_a01Srv/CustomerMessage#preview-app"},{"Name":"A_ServiceOrder","URL":"./service/yourname_3_a01/A_ServiceOrder","FioriURL":"$fiori-preview/yourname_3_a01Srv/A_ServiceOrder#preview-app"},{"Name":"ProductFAQ","URL":"./service/yourname_3_a01/ProductFAQ","FioriURL":"$fiori-preview/yourname_3_a01Srv/ProductFAQ#preview-app"}],"EntitiesCount":3}]}
+                            const data = {"Services":[{"ServiceName":"yourname_3_a01Srv","DetailsURL":"./service/yourname_3_a01/","Metadata":"./service/yourname_3_a01/$metadata","Entities":[{"Name":"CustomerMessage","URL":"./service/yourname_3_a01/CustomerMessage","FioriURL":"$fiori-preview/yourname_3_a01Srv/CustomerMessage#preview-app"},{"Name":"A_ServiceOrder","URL":"./service/yourname_3_a01/A_ServiceOrder","FioriURL":"$fiori-preview/yourname_3_a01Srv/A_ServiceOrder#preview-app"},{"Name":"ProductFAQ","URL":"./service/yourname_3_a01/ProductFAQ","FioriURL":"$fiori-preview/yourname_3_a01Srv/ProductFAQ#preview-app"},{"Name":"ReportMessage","URL":"./service/yourname_3_a01/ReportMessage","FioriURL":"$fiori-preview/yourname_3_a01Srv/ReportMessage#preview-app"}],"EntitiesCount":4}]}
                             this.getView().setModel(new JSONModel(data));
                         }
                     });

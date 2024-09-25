@@ -7,39 +7,58 @@ const LOG = cds.log('GenAI');
  * @After(event = { "CREATE","UPDATE" }, entity = "yourname_3_a01Srv.ProductFAQ")
  * @param {(Object|Object[])} results - For the After phase only: the results of the event processing
  * @param {Object} request - User information, tenant-specific CDS model, headers and query parameters
-*/
+ */
 module.exports = async function(results, request) {
-	try {
-		// Extract the customer message ID from the request parameters
-		const productFAQID = request.data.ID;
-	
-		// Fetch the specific ProductFAQ entry for update
-		let productFAQ = await SELECT.one('yourname_3_a01.ProductFAQ').where({ ID: productFAQID }).forUpdate();
-	
-		const {
-			ID,
-			issue,
-			question,
-			answer
-		} = productFAQ;
-	
-		// Embed the concatenated issue, question, and answer text
-		let embedding = await lLMProxy.embed(request, issue + " " + question + " " + answer, process.env.embeddingEndpoint);
-	
-		// Update the ProductFAQ entry with the new embedding
-		await UPDATE("yourname_3_a01.ProductFAQ", ID).with({ embedding: utils.array2VectorBuffer(embedding) });
-	
-	} catch (err) {
-		// Log the error and send a response
-		LOG.error(JSON.stringify(err));
-	
-		// Extract the root cause message if available
-		const message = err.rootCause?.message || err.message || 'An unexpected error occurred';
-		request.reject({
-			code: "",
-			message: message,
-			target: "",
-			status: 500,
-		});
-	}
+    try {
+        // Extract the ProductFAQ ID from the request data
+        const productFAQID = request.data.ID;
+        if (!productFAQID) {
+            return request.reject(400, 'ProductFAQ ID is missing.');
+        }
+
+        // Fetch the specific ProductFAQ entry for update
+        const productFAQ = await SELECT.one('yourname_3_a01.ProductFAQ').where({ ID: productFAQID }).forUpdate();
+        if (!productFAQ) {
+            return request.reject(404, `ProductFAQ with ID ${productFAQID} not found.`);
+        }
+
+        const {
+            ID,
+            issue,
+            question,
+            answer
+        } = productFAQ;
+
+        // Embed the concatenated issue, question, and answer text
+        let embedding;
+        try {
+            embedding = await lLMProxy.embed(request, `${issue} ${question} ${answer}`, process.env.embeddingEndpoint);
+        } catch (error) {
+            LOG.error('Embedding service failed:', error.message);
+            return request.reject(503, 'Embedding service is unavailable.');
+        }
+
+        // Ensure embedding is valid before updating
+        if (!embedding || !Array.isArray(embedding)) {
+            return request.reject(500, 'Invalid embedding received from the service.');
+        }
+
+        // Update the ProductFAQ entry with the new embedding
+        await UPDATE('yourname_3_a01.ProductFAQ').set({ embedding: utils.array2VectorBuffer(embedding) }).where({ ID });
+
+        LOG.info(`ProductFAQ with ID ${ID} updated with new embedding.`);
+
+    } catch (err) {
+        // Log the error and send a response
+        LOG.error('An error occurred:', err.message);
+
+        // Extract the root cause message if available
+        const message = err.rootCause?.message || err.message || 'An unexpected error occurred';
+        request.reject({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: message,
+            target: 'EmbedFAQs',
+            status: err.code || 500,
+        });
+    }
 }

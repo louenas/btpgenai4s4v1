@@ -30,7 +30,9 @@
     "generate-entry-point": "dev-cap-tools gen-entrypoint",
     "cds-watch": "cds watch --open",
     "watch-yourname_3_a01.mymessages": "cds watch --open yourname_3_a01.mymessages/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-yourname_3_a01.productsfaqapp": "cds watch --open yourname_3_a01.productsfaqapp/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-yourname_3_a01.productsfaqapp": "cds watch --open yourname_3_a01.productsfaqapp/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-yourname_3_a01.reportissue": "cds watch --open yourname_3_a01.reportissue/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-yourname_3_a01.customerapp": "cds watch --open yourname_3_a01.customerapp/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -68,6 +70,9 @@
   "lcap": true,
   "sapux": [
     "app/yourname_3_a01.mymessages",
-    "app/yourname_3_a01.productsfaqapp"
+    "app/yourname_3_a01.productsfaqapp",
+    "app/yourname_3_a01.reportissue",
+    "app/yourname_3_a01.customerapp",
+    "app/yourname_3_a01.customerapp"
   ]
 }
