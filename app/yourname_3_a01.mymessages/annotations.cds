@@ -100,9 +100,10 @@ annotate service.CustomerMessage with @(
                 Value : suggestedResponseCustomerLanguage,
             },
             {
-                $Type : 'UI.DataField',
+                $Type : 'UI.DataFieldWithUrl',
                 Value : S4HC_ServiceOrder_ServiceOrder,
                 Label : 'Service Order',
+                Url : 'https://my301832-api.s4hana.ondemand.com/sap/opu/odata/sap/API_SERVICE_ORDER_SRV/A_ServiceOrder(''{S4HC_ServiceOrder_ServiceOrder}'')'
             },
         ],
     },

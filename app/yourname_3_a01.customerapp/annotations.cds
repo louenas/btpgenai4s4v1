@@ -1,1 +1,0 @@
-using yourname_3_a01Srv as service from '../../srv/service';

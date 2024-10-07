@@ -3,7 +3,7 @@ const lLMProxy = require('./utils/genAIHubProxyDirect');
 const LOG = cds.log('GenAI');
 
 const { embeddingEndpoint, completionEndpoint } = process.env;
-const SIMILARITY_THRESHOLD = 0.5;
+const SIMILARITY_THRESHOLD = 0.3;
 
 /**
  * 
