@@ -1,14 +1,13 @@
-const lLMProxy = require('./utils/genAIHubProxyDirect');
-const utils = require('./utils/utils');
+const utils = require('./genai/utils');
 const LOG = cds.log('GenAI');
+const { getEmbedding } = require('./genai/embedding');
 
-/**
- * 
- * @After(event = { "CREATE","UPDATE" }, entity = "yourname_3_a01Srv.ProductFAQ")
- * @param {(Object|Object[])} results - For the After phase only: the results of the event processing
- * @param {Object} request - User information, tenant-specific CDS model, headers and query parameters
- */
-module.exports = async function(results, request) {
+/* 
+* @After(event = { "CREATE","UPDATE" }, entity = "yourname_3_a01Srv.ProductFAQ")
+* @param {(Object|Object[])} results - For the After phase only: the results of the event processing
+* @param {Object} request - User information, tenant-specific CDS model, headers and query parameters
+*/
+module.exports = async function (results, request) {
     try {
         // Extract the ProductFAQ ID from the request data
         const productFAQID = request.data.ID;
@@ -32,15 +31,12 @@ module.exports = async function(results, request) {
         // Embed the concatenated issue, question, and answer text
         let embedding;
         try {
-            embedding = await lLMProxy.embed(request, `${issue} ${question} ${answer}`, process.env.embeddingEndpoint);
+            // Use getEmbedding to access the embedding vector
+            embedding = await getEmbedding(request, `${issue} ${question} ${answer}`)
+            LOG.info("embedding", embedding);
         } catch (error) {
             LOG.error('Embedding service failed:', error.message);
             return request.reject(503, 'Embedding service is unavailable.');
-        }
-
-        // Ensure embedding is valid before updating
-        if (!embedding || !Array.isArray(embedding)) {
-            return request.reject(500, 'Invalid embedding received from the service.');
         }
 
         // Update the ProductFAQ entry with the new embedding

@@ -2,6 +2,8 @@
 
 Welcome to your new project.
 
+Github repo https://github.com/louenas/btpgenai4s4v1
+
 It contains these folders and files, following our recommended project layout:
 
 File or Folder | Purpose

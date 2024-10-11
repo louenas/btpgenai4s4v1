@@ -1,8 +1,8 @@
 const cds = require('@sap/cds');
-const lLMProxy = require('./utils/genAIHubProxyDirect');
 const LOG = cds.log('GenAI');
+const { orchestrationCompletion } = require('./genai/orchestration');
+const { getEmbedding } = require('./genai/embedding');
 
-const { embeddingEndpoint, completionEndpoint } = process.env;
 const SIMILARITY_THRESHOLD = 0.3;
 
 /**
@@ -54,19 +54,14 @@ module.exports = async function (request) {
             }
         } else {
             LOG.warn('No or Invalid attachedSOId provided.');
-            soContext = '';
         }
     
         let replyPrompt = '';
     
         if (messageCategory === 'Technical') {
-            if (!embeddingEndpoint) {
-                return request.reject(500, 'Embedding endpoint is not configured.');
-            }
-    
             let fullMessageEmbedding;
             try {
-                fullMessageEmbedding = await lLMProxy.embed(request, fullMessageCustomerLanguage, embeddingEndpoint);
+                fullMessageEmbedding = await getEmbedding(request, fullMessageCustomerLanguage)
             } catch (err) {
                 LOG.error('Embedding service failed:', err);
                 return request.reject(503, 'Embedding service is unavailable.');
@@ -94,16 +89,10 @@ module.exports = async function (request) {
                 suggestedResponseEnglish: Text,
                 suggestedResponseCustomerLanguage: Text
             }`;
-    
-        if (!completionEndpoint) {
-            return request.reject(500, 'Completion endpoint is not configured.');
-        }
-    
+
         let resultJSON;
-        let resultRaw;
         try {
-            resultRaw = await lLMProxy.completion(request, replyPrompt, completionEndpoint);
-            resultJSON = JSON.parse(resultRaw);
+            resultJSON = await orchestrationCompletion("filtering", replyPrompt);
         } catch (err) {
             LOG.error('Completion service failed or JSON parsing error:', err);
             return request.reject(503, 'Completion service is unavailable or response is invalid.');

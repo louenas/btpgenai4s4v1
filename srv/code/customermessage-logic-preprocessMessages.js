@@ -1,7 +1,5 @@
-const lLMProxy = require('./utils/genAIHubProxyDirect');
 const LOG = cds.log('GenAI');
-
-const {completionEndpoint } = process.env;
+const { orchestrationCompletion } = require('./genai/orchestration');
 
 /**
  * message categorization, urgency classification, service categorization and summarization and translation
@@ -51,8 +49,7 @@ module.exports = async function (request) {
 	
 				let resultJSON;
 				try {
-					const resultRaw = await lLMProxy.completion(request, prompt, process.env.completionEndpoint);
-					resultJSON = JSON.parse(resultRaw);
+					resultJSON = await orchestrationCompletion("filtering", prompt);
 				} catch (error) {
 					LOG.error(`Error from completion service for CustomerMessage ID ${ID}: ${error.message}`);
 					return;  // Skip this message and proceed to the next
